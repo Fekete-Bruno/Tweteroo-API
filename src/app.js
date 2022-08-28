@@ -18,6 +18,18 @@ const  tweetsHARDCODE = [
     {username: "patrick",tweet: "Number 10"},
     {username: "spongebob",tweet: "Number 11"},
     {username: "spongebob",tweet: "Number 12"},
+    {username: "patrick",tweet: "Number 13"},
+    {username: "spongebob",tweet: "Number 14"},
+    {username: "spongebob",tweet: "Number 15"},
+    {username: "patrick",tweet: "Number 16"},
+    {username: "spongebob",tweet: "Number 17"},
+    {username: "spongebob",tweet: "Number 18"},
+    {username: "patrick",tweet: "Number 19"},
+    {username: "spongebob",tweet: "Number 20"},
+    {username: "spongebob",tweet: "Number 21"},
+    {username: "patrick",tweet: "Number 22"},
+    {username: "spongebob",tweet: "Number 23"},
+    {username: "spongebob",tweet: "Number 24"},
 ];
 
 const usersHARDCODE= [
@@ -25,14 +37,28 @@ const usersHARDCODE= [
     {username: 'spongebob', avatar: "https://super.abril.com.br/wp-content/uploads/2020/09/04-09_gato_SITE.jpg?quality=70&strip=info" }
 ];
 
-app.get('/tweets',(req,res)=>{
-    const allTweets = [...tweetsHARDCODE];
-    const recentTweets = allTweets.reverse().filter((e,index)=>{return(index<10)}).map((element)=>{
-        return({...element,
-            avatar:(usersHARDCODE.find(el=>el.username===element.username)).avatar
-        });
+function addAvatar (element){
+    return({...element,
+        avatar:(usersHARDCODE.find(el=>el.username===element.username)).avatar
     });
+}
+
+app.get('/tweets',(req,res)=>{
+    const page = parseInt(req.query.page);
+    if(!page || page<1){
+        return res.status(400).send("Informe uma página válida!");
+    }
+    const ten = 10;
+    const allTweets = [...tweetsHARDCODE];
+    const recentTweets = allTweets.reverse().filter((e,index)=>{return(((page*ten)-ten)<=index && index<page*ten)}).map((tweet)=>addAvatar(tweet));
     res.send(recentTweets);
+});
+
+app.get('/tweets/:username',(req,res)=>{
+    const username = req.params.username;
+    const allTweets = [...tweetsHARDCODE];
+    const userTweets = allTweets.reverse().filter((e)=>{return(e.username===username)}).map((tweet)=>addAvatar(tweet));
+    res.send(userTweets);
 });
 
 app.post('/sign-up',(req,res)=>{
@@ -46,7 +72,8 @@ app.post('/sign-up',(req,res)=>{
 });
 
 app.post('/tweets',(req,res)=>{
-    const { username, tweet } =  req.body;
+    const username = req.headers.user;
+    const { tweet } =  req.body;
     if(!username || !tweet){
         return res.status(400).send("Todos os campos são obrigatórios!");
     }
