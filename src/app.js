@@ -10,7 +10,7 @@ const users= [];
 
 function addAvatar (element){
     return({...element,
-        avatar:(users.find(el=>el.username===element.username)).avatar
+        avatar:(users.find(el=>el.username===element.username)).avatar,
     });
 }
 
