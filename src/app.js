@@ -23,7 +23,7 @@ const usersHARDCODE= [
 ];
 
 app.get('/tweets',(req,res)=>{
-    const recentTweets = tweetsHARDCODE.filter((e,index)=>{return(index<10)});
+    const recentTweets = tweetsHARDCODE.reverse().filter((e,index)=>{return(index<10)});
     recentTweets.map((element)=>element.avatar=usersHARDCODE.find(el=>el.username===element.username).avatar);
     res.send(recentTweets);
 });
@@ -35,7 +35,17 @@ app.post('/sign-up',(req,res)=>{
     }
 
     usersHARDCODE.push({username,avatar});
-    console.log(usersHARDCODE);
+    res.status(201).send("OK");
+});
+
+app.post('/tweets',(req,res)=>{
+    const { username, tweet } =  req.body;
+    if(!username || !tweet){
+        return res.status(400).send("Todos os campos são obrigatórios!");
+    }
+
+    tweetsHARDCODE.push({username,tweet});
+    console.log(tweetsHARDCODE);
     res.status(201).send("OK");
 });
 
