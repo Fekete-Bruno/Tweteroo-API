@@ -4,18 +4,18 @@ const app = express();
 app.use(express.json());
 
 const  tweetsHARDCODE = [
-    {username: "patrick",tweet: "I'm Hungry"},
-    {username: "spongebob",tweet: "Let's make some krabby patties!!"},
-    {username: "spongebob",tweet: "I'm READY!!!"},
-    {username: "patrick",tweet: "I'm Hungry"},
-    {username: "spongebob",tweet: "Let's make some krabby patties!!"},
-    {username: "spongebob",tweet: "I'm READY!!!"},
-    {username: "patrick",tweet: "I'm Hungry"},
-    {username: "spongebob",tweet: "Let's make some krabby patties!!"},
-    {username: "spongebob",tweet: "I'm READY!!!"},
-    {username: "patrick",tweet: "I'm Hungry"},
-    {username: "spongebob",tweet: "Let's make some krabby patties!!"},
-    {username: "spongebob",tweet: "I'm READY!!!"},
+    {username: "patrick",tweet: "Number 1"},
+    {username: "spongebob",tweet: "Number 2"},
+    {username: "spongebob",tweet: "Number 3"},
+    {username: "patrick",tweet: "Number 4"},
+    {username: "spongebob",tweet: "Number 5"},
+    {username: "spongebob",tweet: "Number 6"},
+    {username: "patrick",tweet: "Number 7"},
+    {username: "spongebob",tweet: "Number 8"},
+    {username: "spongebob",tweet: "Number 9"},
+    {username: "patrick",tweet: "Number 10"},
+    {username: "spongebob",tweet: "Number 11"},
+    {username: "spongebob",tweet: "Number 12"},
 ];
 const usersHARDCODE= [
     {username:"patrick",avatar:"http://logos-download.com/wp-content/uploads/2016/09/Patrick_Star_picture_logo.png"},
@@ -23,8 +23,12 @@ const usersHARDCODE= [
 ];
 
 app.get('/tweets',(req,res)=>{
-    const recentTweets = tweetsHARDCODE.reverse().filter((e,index)=>{return(index<10)});
-    recentTweets.map((element)=>element.avatar=usersHARDCODE.find(el=>el.username===element.username).avatar);
+    const allTweets = [...tweetsHARDCODE];
+    const recentTweets = allTweets.reverse().filter((e,index)=>{return(index<10)}).map((element)=>{
+        return({...element,
+            avatar:(usersHARDCODE.find(el=>el.username===element.username)).avatar
+        });
+    });
     res.send(recentTweets);
 });
 
@@ -45,7 +49,6 @@ app.post('/tweets',(req,res)=>{
     }
 
     tweetsHARDCODE.push({username,tweet});
-    console.log(tweetsHARDCODE);
     res.status(201).send("OK");
 });
 
